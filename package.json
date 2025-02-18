@@ -1,0 +1,81 @@
+{
+  "name": "@gitevents/fetch",
+  "version": "1.0.0",
+  "description": "Fetch events and talks from GitHub Issues",
+  "keywords": [
+    "gitevents",
+    "events",
+    "issue ops",
+    "fetch",
+    "github",
+    "action"
+  ],
+  "homepage": "https://github.com/gitevents",
+  "bugs": {
+    "url": "https://github.com/gitevents/fetch/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gitevents/fetch.git"
+  },
+  "license": "MIT",
+  "author": "Patrick Heneise <patrick@zentered.co> (https://zentered.co)",
+  "contributors": [
+    {
+      "name": "Patrick Heneise",
+      "url": "https://zentered.co",
+      "author": true
+    }
+  ],
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "npm run lint && npm run test && npm run prepare",
+    "format": "prettier --write .",
+    "postinstall": "husky install",
+    "license-checker": "license-checker --production --onlyAllow=\"MIT;ISC;BSD-3-Clause;BSD-2-Clause;Apache-2.0\"",
+    "lint": "eslint .",
+    "prepare": "ncc build src/index.js -o dist --source-map --license licenses.txt",
+    "test": "node --test"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "lint-staged": {
+    "*.{js,json,md}": [
+      "prettier --write"
+    ],
+    "*.{js}": [
+      "eslint --cache --fix"
+    ]
+  },
+  "release": {
+    "branches": [
+      "main"
+    ],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/github"
+    ]
+  },
+  "dependencies": {
+    "@actions/core": "^1.11.1",
+    "@actions/github": "^6.0.0",
+    "@octokit/auth-app": "^7.1.5",
+    "@octokit/graphql": "^8.2.1",
+    "@zentered/issue-forms-body-parser": "^2.2.0"
+  },
+  "devDependencies": {
+    "@commitlint/config-conventional": "^19.7.1",
+    "@vercel/ncc": "^0.38.3",
+    "commitlint": "^19.7.1",
+    "eslint": "^9.20.1",
+    "globals": "^15.15.0",
+    "husky": "^9.1.7",
+    "license-checker": "^25.0.1",
+    "prettier": "^3.5.1"
+  }
+}
