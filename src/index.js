@@ -1,7 +1,7 @@
 import { createAppAuth } from '@octokit/auth-app'
 import { graphql } from '@octokit/graphql'
 import { ghAppId, ghAppInstallationId, ghPrivateKey } from './config.js'
-import { listUpcomingEvents } from './lib/events.js'
+import { listUpcomingEvents } from './events.js'
 
 const auth = createAppAuth({
   appId: ghAppId,
@@ -15,6 +15,6 @@ const graphqlWithAuth = graphql.defaults({
   }
 })
 
-export async function upcomingEvents() {
-  return listUpcomingEvents(graphqlWithAuth)
+export async function upcomingEvents(org, repo) {
+  return listUpcomingEvents(graphqlWithAuth, org, repo)
 }

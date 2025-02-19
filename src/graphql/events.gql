@@ -11,37 +11,75 @@ query (
       orderBy: { field: CREATED_AT, direction: DESC }
       labels: "DEFAULT_LABEL"
     ) {
-      nodes {
-        id
-        number
-        title
-        url
-        body
-        reactions(first: 100) {
-          nodes {
-            content
-          }
-        }
-        subIssues(first: 10) {
-          nodes {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      edges {
+        cursor
+        node {
+          ... on Issue {
+            id
+            number
             title
+            url
             body
             reactions(first: 100) {
               nodes {
                 content
               }
             }
-            author {
-              login
-              avatarUrl
-              url
+            subIssues(first: 10) {
+              nodes {
+                title
+                body
+                reactions(first: 100) {
+                  nodes {
+                    content
+                  }
+                }
+                author {
+                  login
+                  avatarUrl
+                  url
+                }
+              }
+            }
+            subIssuesSummary {
+              total
             }
           }
-        }
-        subIssuesSummary {
-          total
-          completed
-          percentCompleted
+          id
+          number
+          title
+          url
+          body
+          reactions(first: 100) {
+            nodes {
+              content
+            }
+          }
+          subIssues(first: 10) {
+            nodes {
+              title
+              body
+              reactions(first: 100) {
+                nodes {
+                  content
+                }
+              }
+              author {
+                login
+                avatarUrl
+                url
+              }
+            }
+          }
+          subIssuesSummary {
+            total
+            completed
+            percentCompleted
+          }
         }
       }
     }

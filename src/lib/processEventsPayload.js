@@ -1,20 +1,10 @@
-import { ghOrg, ghRepo } from '../config.js'
-import { parseGql } from './parseGql.js'
 import bodyParser from '@zentered/issue-forms-body-parser'
 
-export async function listUpcomingEvents(graphql) {
-  const query = await parseGql('events')
-  const vars = {
-    organization: ghOrg,
-    repository: ghRepo,
-    state: 'OPEN',
-    first: 10
-  }
-
-  const result = await graphql(query, vars)
-
+export async function processEventsPayload(eventIssues) {
   const events = []
-  for (const eventIssue of result.repository.issues.nodes) {
+
+  for (const edge of eventIssues) {
+    const { node: eventIssue } = edge
     const { title, url, body, number, reactions, subIssues } = eventIssue
     const parsedBody = await bodyParser(body)
     const event = {
@@ -54,5 +44,11 @@ export async function listUpcomingEvents(graphql) {
     events.push(event)
   }
 
-  console.log(JSON.stringify(events, null, 2))
+  const sortedByDate = events
+    .sort((a, b) => {
+      return new Date(a.facets.date) - new Date(b.facets.date)
+    })
+    .reverse()
+
+  return sortedByDate
 }

@@ -1,6 +1,3 @@
-// GITHUB_REPOSITORY is a default environment variable in GitHub Actions
-export const [ghOrg, ghRepo] = process.env.GITHUB_REPOSITORY.split('/')
-
 // OAuth App Credentials
 export const ghAppId = process.env.GH_APP_ID
 export const ghPrivateKey = process.env.GH_PRIVATE_KEY

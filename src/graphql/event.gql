@@ -1,0 +1,39 @@
+query ($organization: String!, $repository: String!, $number: Int!) {
+  repository(owner: $organization, name: $repository) {
+    issues(number: $number) {
+      nodes {
+        id
+        number
+        title
+        url
+        body
+        reactions(first: 100) {
+          nodes {
+            content
+          }
+        }
+        subIssues(first: 10) {
+          nodes {
+            title
+            body
+            reactions(first: 100) {
+              nodes {
+                content
+              }
+            }
+            author {
+              login
+              avatarUrl
+              url
+            }
+          }
+        }
+        subIssuesSummary {
+          total
+          completed
+          percentCompleted
+        }
+      }
+    }
+  }
+}
