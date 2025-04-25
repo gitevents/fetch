@@ -1,5 +1,5 @@
 {
-  "name": "@gitevents/fetch",
+  "name": "gitevents-fetch",
   "version": "0.0.1-dev",
   "description": "Fetch events and talks from GitHub Issues",
   "keywords": [
