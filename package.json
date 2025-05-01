@@ -1,6 +1,6 @@
 {
   "name": "gitevents-fetch",
-  "version": "0.0.1-dev",
+  "version": "0.0.2-dev",
   "description": "Fetch events and talks from GitHub Issues",
   "keywords": [
     "gitevents",
@@ -63,6 +63,7 @@
     "@actions/core": "^1.11.1",
     "@actions/github": "^6.0.0",
     "@octokit/auth-app": "^7.2.1",
+    "@octokit/auth-token": "^5.1.2",
     "@octokit/graphql": "^8.2.2",
     "@zentered/issue-forms-body-parser": "^2.2.0"
   },
