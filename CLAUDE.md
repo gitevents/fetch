@@ -42,14 +42,12 @@ The authenticated GraphQL client is created once in `src/index.js` and passed to
 ### Core Data Flow
 
 1. **Query Layer** (src/events.js)
-
    - `listUpcomingEvents()` - Fetches open issues (events)
    - `listPastEvents()` - Fetches closed issues (events)
    - `getEvent()` - Fetches single event by issue number
    - All functions accept pagination parameters (default: `{ first: 10 }`)
 
 2. **GraphQL Layer** (src/graphql/)
-
    - `.gql` files contain GraphQL query definitions
    - `events.gql` - Query for multiple events with cursor-based pagination
    - `event.gql` - Query for single event by issue number
@@ -113,13 +111,13 @@ This codebase has been hardened for production with the following improvements:
 
 ### GraphQL Optimization
 
-- Duplicate fields removed from queries (reduced size by 40%)
+- Duplicate fields removed from queries (reduced size)
 - Queries request only necessary fields
 - Both `events.gql` and `event.gql` properly fetch `url` field for talks
 
 ### Testing
 
-- 22 comprehensive tests with 100% pass rate
+- Comprehensive test suite with 100% pass rate
 - Unit tests for each module (parseGql, processEventsPayload, events)
 - Integration tests with mocked GraphQL responses
 - Real API test that auto-skips without credentials (CI/CD safe)
