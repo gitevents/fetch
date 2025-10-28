@@ -359,6 +359,39 @@ This library has been thoroughly tested and optimized for production use:
 - ✅ **Conventional commits**: Automated changelog generation
 - ✅ **Type hints**: JSDoc-style documentation
 
+## Using with Vite/SSR
+
+If you're using this package in a Vite project with Server-Side Rendering (SSR), you need to configure Vite to properly bundle the GraphQL files:
+
+### Installation
+
+```bash
+npm install -D vite-plugin-graphql-loader
+```
+
+### Vite Configuration
+
+Add the GraphQL loader plugin and include this package in `ssr.noExternal`:
+
+```javascript
+// vite.config.js
+import { defineConfig } from 'vite'
+import graphqlLoader from 'vite-plugin-graphql-loader'
+
+export default defineConfig({
+  plugins: [graphqlLoader()],
+  ssr: {
+    noExternal: ['gitevents-fetch']
+  }
+})
+```
+
+**Why this is needed:**
+
+- The library imports `.gql` files using Vite's `?raw` suffix for efficient bundling
+- `vite-plugin-graphql-loader` enables Vite to process `.gql` files as modules
+- Adding to `ssr.noExternal` ensures the package is bundled during SSR instead of being treated as an external dependency, allowing proper resolution of the GraphQL imports
+
 ## Development
 
 ### Prerequisites
