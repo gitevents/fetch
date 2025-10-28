@@ -18,37 +18,6 @@ query (
       edges {
         cursor
         node {
-          ... on Issue {
-            id
-            number
-            title
-            url
-            body
-            reactions(first: 100) {
-              nodes {
-                content
-              }
-            }
-            subIssues(first: 10) {
-              nodes {
-                title
-                body
-                reactions(first: 100) {
-                  nodes {
-                    content
-                  }
-                }
-                author {
-                  login
-                  avatarUrl
-                  url
-                }
-              }
-            }
-            subIssuesSummary {
-              total
-            }
-          }
           id
           number
           title
@@ -62,6 +31,7 @@ query (
           subIssues(first: 10) {
             nodes {
               title
+              url
               body
               reactions(first: 100) {
                 nodes {
@@ -72,6 +42,9 @@ query (
                 login
                 avatarUrl
                 url
+                ... on User {
+                  name
+                }
               }
             }
           }
