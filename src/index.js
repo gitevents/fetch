@@ -4,6 +4,7 @@ import { graphql } from '@octokit/graphql'
 import { ghAppId, ghAppInstallationId, ghPrivateKey, ghPAT } from './config.js'
 import { listUpcomingEvents, listPastEvents, getEvent } from './events.js'
 import { getTeamById } from './teams.js'
+import { getFile as getFileContent } from './files.js'
 
 function createAuth() {
   // Use PAT if provided (and no private key)
@@ -54,4 +55,8 @@ export async function event(org, repo, number) {
 
 export async function getTeam(org, teamSlug) {
   return getTeamById(graphqlWithAuth, org, teamSlug)
+}
+
+export async function getFile(org, repo, filePath, options) {
+  return getFileContent(graphqlWithAuth, org, repo, filePath, options)
 }
