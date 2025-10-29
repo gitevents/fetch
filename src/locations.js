@@ -1,14 +1,5 @@
 import { getFile } from './files.js'
-
-function validateParams(params) {
-  const missing = []
-  for (const [key, value] of Object.entries(params)) {
-    if (!value) missing.push(key)
-  }
-  if (missing.length > 0) {
-    throw new Error(`Missing required parameters: ${missing.join(', ')}`)
-  }
-}
+import { validateParams } from './lib/validateParams.js'
 
 function validateLocationSchema(location) {
   // Basic schema validation for location objects
