@@ -4,6 +4,7 @@ import { graphql } from '@octokit/graphql'
 import { ghAppId, ghAppInstallationId, ghPrivateKey, ghPAT } from './config.js'
 import { listUpcomingEvents, listPastEvents, getEvent } from './events.js'
 import { getTeamById } from './teams.js'
+import { getLocations as fetchLocations } from './locations.js'
 import { getUser as getUserProfile } from './users.js'
 import { getFile as getFileContent } from './files.js'
 
@@ -100,4 +101,12 @@ export async function getUser(login) {
     throw new Error('Missing required parameters: login is required')
   }
   return getUserProfile(getGraphqlClient(), login)
+}
+
+export async function getLocations(org, repo, options) {
+  // Validate parameters before creating auth
+  if (!org || !repo) {
+    throw new Error('Missing required parameters: org and repo are required')
+  }
+  return fetchLocations(getGraphqlClient(), org, repo, options)
 }

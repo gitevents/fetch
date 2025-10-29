@@ -12,6 +12,7 @@ A Node.js library for fetching events and talks from GitEvents-based GitHub repo
 
 - 🚀 Fetch upcoming and past events from GitHub Issues
 - 🎤 Retrieve event talks and speaker submissions (via sub-issues)
+- 📍 Fetch and validate location data with consistent schema
 - 👤 Fetch user profiles and speaker information
 - 📄 Fetch file contents from repositories (text files, JSON, etc.)
 - 👥 Fetch GitHub Teams and team members
@@ -302,6 +303,86 @@ const config = await getFile('myorg', 'myrepo', 'config.json', {
 - Throws `File not found` error if file doesn't exist
 - Throws `Binary files are not supported` error for binary files
 - Throws `Failed to parse JSON` error if parse: true but content is invalid JSON
+
+### `getLocations(org, repo, options?)`
+
+Fetch and validate location data from a repository with consistent schema.
+
+**Parameters:**
+
+- `org` (string) - GitHub organization or user name
+- `repo` (string) - Repository name
+- `options` (object, optional) - Options
+  - `fileName` (string) - File name (default: 'locations.json')
+  - `branch` (string) - Branch name (default: 'HEAD')
+
+**Returns:** `Promise<{ locations: Location[], errors: Error[] | null }>`
+
+Returns validated locations and any validation errors.
+
+**Example:**
+
+```javascript
+import { getLocations } from 'gitevents-fetch'
+
+const result = await getLocations('myorg', 'events')
+
+console.log(result.locations)
+// [
+//   {
+//     id: 'venue-1',
+//     name: 'Tech Hub',
+//     address: '123 Main St, City',
+//     coordinates: { lat: 40.7128, lng: -74.006 },
+//     url: 'https://techhub.com',
+//     what3words: 'filled.count.soap',
+//     description: 'A modern tech venue',
+//     capacity: 100,
+//     accessibility: 'Wheelchair accessible'
+//   }
+// ]
+
+// Check for validation errors
+if (result.errors) {
+  console.log('Invalid locations:', result.errors)
+}
+
+// Use custom file name
+const venues = await getLocations('myorg', 'events', {
+  fileName: 'venues.json'
+})
+```
+
+**Location Schema:**
+
+Required fields:
+
+- `id` (string) - Unique identifier
+- `name` (string) - Location name
+
+Optional fields (null if not provided):
+
+- `address` (string) - Physical address
+- `coordinates` (object) - { lat: number, lng: number }
+- `url` (string) - Location website
+- `what3words` (string) - what3words address
+- `description` (string) - Location description
+- `capacity` (number) - Venue capacity
+- `accessibility` (string) - Accessibility information
+- Custom fields are preserved
+
+**Validation:**
+
+The function validates each location and returns:
+
+- `locations` - Array of valid, normalized locations
+- `errors` - Array of validation errors (null if all valid)
+
+Each error includes:
+
+- `index` - Array index of invalid location
+- `id` - Location ID (if available)
+- `errors` - Array of validation error messages
 
 ### Fetching Talks from a Dedicated Repository
 
