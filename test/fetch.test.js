@@ -8,7 +8,11 @@ test('index exports - validates public API', async () => {
     'pastEvents',
     'event',
     'getTeam',
-    'getFile'
+    'getFile',
+    'getUser',
+    'getLocations',
+    'getOrganization',
+    'discussions'
   ]
 
   expectedExports.forEach((name) => {

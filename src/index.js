@@ -4,6 +4,7 @@ import { graphql } from '@octokit/graphql'
 import { ghAppId, ghAppInstallationId, ghPrivateKey, ghPAT } from './config.js'
 import { listUpcomingEvents, listPastEvents, getEvent } from './events.js'
 import { getTeamById } from './teams.js'
+import { listDiscussions } from './discussions.js'
 import { getOrganization as getOrg } from './organization.js'
 import { getLocations as fetchLocations } from './locations.js'
 import { getUser as getUserProfile } from './users.js'
@@ -118,4 +119,12 @@ export async function getOrganization(org) {
     throw new Error('Missing required parameters: org is required')
   }
   return getOrg(getGraphqlClient(), org)
+}
+
+export async function discussions(org, repo, options) {
+  // Validate parameters before creating auth
+  if (!org || !repo) {
+    throw new Error('Missing required parameters: org and repo are required')
+  }
+  return listDiscussions(getGraphqlClient(), org, repo, options)
 }

@@ -12,6 +12,7 @@ A Node.js library for fetching events and talks from GitEvents-based GitHub repo
 
 - 🚀 Fetch upcoming and past events from GitHub Issues
 - 🎤 Retrieve event talks and speaker submissions (via sub-issues)
+- 💬 Fetch GitHub Discussions (announcements, Q&A, etc.)
 - 🏢 Fetch organization statistics and metadata
 - 📍 Fetch and validate location data with consistent schema
 - 👤 Fetch user profiles and speaker information
@@ -420,6 +421,52 @@ Each error includes:
 - `id` - Location ID (if available)
 - `errors` - Array of validation error messages
 
+### `discussions(org, repo, options?)`
+
+Fetch discussions from a repository, optionally filtered by category.
+
+**Parameters:**
+
+- `org` (string) - GitHub organization or user name
+- `repo` (string) - Repository name
+- `options` (object, optional) - Options
+  - `first` (number) - Number of discussions to fetch (default: 10)
+  - `categoryId` (string) - Filter by discussion category ID (optional)
+
+**Returns:** `Promise<Discussion[]>`
+
+**Example:**
+
+```javascript
+import { discussions } from 'gitevents-fetch'
+
+// Fetch all discussions
+const allDiscussions = await discussions('myorg', 'home', { first: 20 })
+
+// Fetch discussions from specific category
+const announcements = await discussions('myorg', 'home', {
+  categoryId: 'DIC_kwDOG41Ukc4CBSDX',
+  first: 10
+})
+
+console.log(announcements)
+// [
+//   {
+//     id: 'D_123',
+//     number: 1,
+//     title: 'Important Announcement',
+//     url: 'https://github.com/org/repo/discussions/1',
+//     body: 'Discussion content...',
+//     createdAt: Date('2024-01-01T00:00:00.000Z'),
+//     updatedAt: Date('2024-01-02T00:00:00.000Z'),
+//     author: { login: 'user', name: 'User Name', ... },
+//     category: { id: 'CAT_123', name: 'Announcements', emoji: '📢', ... },
+//     reactions: ['THUMBS_UP', 'HEART'],
+//     commentCount: 5
+//   }
+// ]
+```
+
 ### Fetching Talks from a Dedicated Repository
 
 Talks stored as issues in a dedicated repository can be fetched using the existing event functions:
@@ -505,6 +552,34 @@ export DEFAULT_APPROVED_EVENT_LABEL="Approved Talk"
 {
   provider: string // Social media provider (e.g., 'LINKEDIN', 'GENERIC')
   url: string // Full URL to social media profile
+}
+```
+
+### Discussion Object Structure
+
+```typescript
+{
+  id: string                // Discussion ID
+  number: number            // Discussion number
+  title: string             // Discussion title
+  url: string               // GitHub discussion URL
+  body: string | null       // Discussion body/content
+  createdAt: Date | null    // Creation date
+  updatedAt: Date | null    // Last update date
+  author: {                 // Discussion author (null if not available)
+    login: string           // GitHub username
+    name: string | null     // Display name
+    avatarUrl: string       // Profile avatar URL
+    url: string             // GitHub profile URL
+  } | null
+  category: {               // Discussion category (null if not available)
+    id: string              // Category ID
+    name: string            // Category name
+    emoji: string           // Category emoji
+    description: string | null // Category description
+  } | null
+  reactions: string[]       // Array of reaction types
+  commentCount: number      // Number of comments
 }
 ```
 
