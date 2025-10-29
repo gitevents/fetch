@@ -2,7 +2,7 @@ import test from 'node:test'
 import assert from 'node:assert'
 import { getLocations } from '../src/locations.js'
 
-// Mock getFile function
+// Mock graphql function for file fetching
 const createMockGraphql = (fileContent) => {
   return async (query, vars) => {
     // Simulate file fetching
@@ -152,6 +152,42 @@ test('getLocations - includes validation errors for invalid data', async () => {
 
   assert.equal(result.errors[2].index, 3)
   assert.ok(result.errors[2].errors[0].includes('coordinates'))
+})
+
+test('getLocations - validates missing lat or lng in coordinates', async () => {
+  const locationsData = [
+    {
+      id: 'venue-1',
+      name: 'Missing Lat',
+      coordinates: {
+        lng: -74.006
+      }
+    },
+    {
+      id: 'venue-2',
+      name: 'Missing Lng',
+      coordinates: {
+        lat: 40.7128
+      }
+    },
+    {
+      id: 'venue-3',
+      name: 'Empty Coords',
+      coordinates: {}
+    }
+  ]
+
+  const mockGraphql = createMockGraphql(locationsData)
+  const result = await getLocations(mockGraphql, 'org', 'repo')
+
+  assert.equal(result.locations.length, 0) // No valid venues
+  assert.ok(result.errors) // Has validation errors
+  assert.equal(result.errors.length, 3) // All three are invalid
+
+  // Check that all have coordinate-related errors
+  assert.ok(result.errors[0].errors[0].includes('coordinates'))
+  assert.ok(result.errors[1].errors[0].includes('coordinates'))
+  assert.ok(result.errors[2].errors.some((e) => e.includes('coordinates')))
 })
 
 test('getLocations - handles custom fields', async () => {

@@ -31,10 +31,16 @@ function validateLocationSchema(location) {
     if (typeof location.coordinates !== 'object') {
       errors.push('Location coordinates must be an object')
     } else {
-      if (typeof location.coordinates.lat !== 'number') {
+      if (
+        !('lat' in location.coordinates) ||
+        typeof location.coordinates.lat !== 'number'
+      ) {
         errors.push('Location coordinates.lat must be a number')
       }
-      if (typeof location.coordinates.lng !== 'number') {
+      if (
+        !('lng' in location.coordinates) ||
+        typeof location.coordinates.lng !== 'number'
+      ) {
         errors.push('Location coordinates.lng must be a number')
       }
     }
