@@ -1,6 +1,6 @@
 {
   "name": "gitevents-fetch",
-  "version": "0.0.4",
+  "version": "1.0.0",
   "description": "Fetch events and talks from GitHub Issues",
   "keywords": [
     "gitevents",
