@@ -33,30 +33,36 @@ function createAuth() {
   }
 }
 
-const auth = createAuth()
+let graphqlWithAuth = null
 
-const graphqlWithAuth = graphql.defaults({
-  request: {
-    hook: auth.hook
+function getGraphqlClient() {
+  if (!graphqlWithAuth) {
+    const auth = createAuth()
+    graphqlWithAuth = graphql.defaults({
+      request: {
+        hook: auth.hook
+      }
+    })
   }
-})
+  return graphqlWithAuth
+}
 
 export async function upcomingEvents(org, repo) {
-  return listUpcomingEvents(graphqlWithAuth, org, repo)
+  return listUpcomingEvents(getGraphqlClient(), org, repo)
 }
 
 export async function pastEvents(org, repo) {
-  return listPastEvents(graphqlWithAuth, org, repo)
+  return listPastEvents(getGraphqlClient(), org, repo)
 }
 
 export async function event(org, repo, number) {
-  return getEvent(graphqlWithAuth, org, repo, number)
+  return getEvent(getGraphqlClient(), org, repo, number)
 }
 
 export async function getTeam(org, teamSlug) {
-  return getTeamById(graphqlWithAuth, org, teamSlug)
+  return getTeamById(getGraphqlClient(), org, teamSlug)
 }
 
 export async function getFile(org, repo, filePath, options) {
-  return getFileContent(graphqlWithAuth, org, repo, filePath, options)
+  return getFileContent(getGraphqlClient(), org, repo, filePath, options)
 }
