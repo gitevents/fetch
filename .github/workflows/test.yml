@@ -4,22 +4,29 @@ on:
   pull_request:
     branches:
       - '**'
-      - '!main'
   push:
     branches:
       - '**'
       - '!main'
+  workflow_call:
+    secrets:
+      GITHUB_TOKEN:
+        required: false
 
 jobs:
   test:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20, 22]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
-      - run: npm install
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - run: npm ci
       - run: npm run lint
       - run: npm test

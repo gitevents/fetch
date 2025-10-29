@@ -2,8 +2,11 @@
 
 [![npm version](https://img.shields.io/npm/v/gitevents-fetch.svg)](https://www.npmjs.com/package/gitevents-fetch)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![npm provenance](https://img.shields.io/badge/provenance-attested-green)](https://docs.npmjs.com/generating-provenance-statements)
 
 A Node.js library for fetching events and talks from GitEvents-based GitHub repositories using GitHub's GraphQL API. GitEvents uses GitHub Issues as a data source for managing community events and talk submissions.
+
+> **Security**: This package is published with [npm provenance](https://docs.npmjs.com/generating-provenance-statements) attestation, ensuring verifiable supply chain security.
 
 ## Features
 
