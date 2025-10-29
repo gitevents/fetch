@@ -21,6 +21,10 @@ test('index exports - validates public API', async () => {
     typeof indexModule.getTeam === 'function',
     'Should export getTeam function'
   )
+  assert.ok(
+    typeof indexModule.discussions === 'function',
+    'Should export discussions function'
+  )
 })
 
 test('index exports - validates parameter requirements', async () => {

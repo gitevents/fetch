@@ -1,0 +1,53 @@
+query (
+  $organization: String!
+  $repository: String!
+  $categoryId: ID
+  $first: Int
+) {
+  repository(owner: $organization, name: $repository) {
+    discussions(
+      first: $first
+      orderBy: { field: CREATED_AT, direction: DESC }
+      categoryId: $categoryId
+    ) {
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      edges {
+        cursor
+        node {
+          id
+          number
+          title
+          url
+          body
+          createdAt
+          updatedAt
+          author {
+            login
+            avatarUrl
+            url
+            ... on User {
+              name
+            }
+          }
+          category {
+            id
+            name
+            emoji
+            description
+          }
+          reactions(first: 100) {
+            nodes {
+              content
+            }
+          }
+          comments(first: 1) {
+            totalCount
+          }
+        }
+      }
+    }
+  }
+}
