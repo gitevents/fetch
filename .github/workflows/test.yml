@@ -9,14 +9,9 @@ on:
       - '**'
       - '!main'
   workflow_call:
-    secrets:
-      GITHUB_TOKEN:
-        required: false
 
 jobs:
   test:
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
