@@ -2,14 +2,18 @@
 
 [![npm version](https://img.shields.io/npm/v/gitevents-fetch.svg)](https://www.npmjs.com/package/gitevents-fetch)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![npm provenance](https://img.shields.io/badge/provenance-attested-green)](https://docs.npmjs.com/generating-provenance-statements)
 
 A Node.js library for fetching events and talks from GitEvents-based GitHub repositories using GitHub's GraphQL API. GitEvents uses GitHub Issues as a data source for managing community events and talk submissions.
+
+> **Security**: This package is published with [npm provenance](https://docs.npmjs.com/generating-provenance-statements) attestation, ensuring verifiable supply chain security.
 
 ## Features
 
 - 🚀 Fetch upcoming and past events from GitHub Issues
 - 🎤 Retrieve event talks and speaker submissions (via sub-issues)
 - 👤 Fetch user profiles and speaker information
+- 📄 Fetch file contents from repositories (text files, JSON, etc.)
 - 👥 Fetch GitHub Teams and team members
 - 🔐 Support for both GitHub Personal Access Tokens (PAT) and GitHub App authentication
 - 📊 Parse structured event data using issue forms
@@ -255,6 +259,49 @@ console.log(user)
 //   ]
 // }
 ```
+
+### `getFile(org, repo, filePath, options?)`
+
+Fetch file contents from a repository.
+
+**Parameters:**
+
+- `org` (string) - GitHub organization or user name
+- `repo` (string) - Repository name
+- `filePath` (string) - Path to the file in the repository
+- `options` (object, optional) - Options
+  - `branch` (string) - Branch name (default: 'HEAD')
+  - `parse` (boolean) - Auto-parse JSON files (default: false)
+
+**Returns:** `Promise<string | object>`
+
+Returns string content by default, or parsed object if `parse: true` is used with JSON files.
+
+**Example:**
+
+```javascript
+import { getFile } from 'gitevents-fetch'
+
+// Fetch text file
+const readme = await getFile('myorg', 'myrepo', 'README.md')
+console.log(readme) // "# My Project\n..."
+
+// Fetch JSON file with auto-parsing
+const data = await getFile('myorg', 'myrepo', 'data.json', { parse: true })
+console.log(data) // { key: 'value', ... }
+
+// Fetch from specific branch
+const config = await getFile('myorg', 'myrepo', 'config.json', {
+  branch: 'develop',
+  parse: true
+})
+```
+
+**Error Handling:**
+
+- Throws `File not found` error if file doesn't exist
+- Throws `Binary files are not supported` error for binary files
+- Throws `Failed to parse JSON` error if parse: true but content is invalid JSON
 
 ### Fetching Talks from a Dedicated Repository
 

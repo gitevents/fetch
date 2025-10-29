@@ -5,6 +5,7 @@ import { ghAppId, ghAppInstallationId, ghPrivateKey, ghPAT } from './config.js'
 import { listUpcomingEvents, listPastEvents, getEvent } from './events.js'
 import { getTeamById } from './teams.js'
 import { getUser as getUserProfile } from './users.js'
+import { getFile as getFileContent } from './files.js'
 
 function createAuth() {
   // Use PAT if provided (and no private key)
@@ -33,30 +34,70 @@ function createAuth() {
   }
 }
 
-const auth = createAuth()
+let graphqlWithAuth = null
 
-const graphqlWithAuth = graphql.defaults({
-  request: {
-    hook: auth.hook
+function getGraphqlClient() {
+  if (!graphqlWithAuth) {
+    const auth = createAuth()
+    graphqlWithAuth = graphql.defaults({
+      request: {
+        hook: auth.hook
+      }
+    })
   }
-})
+  return graphqlWithAuth
+}
 
 export async function upcomingEvents(org, repo) {
-  return listUpcomingEvents(graphqlWithAuth, org, repo)
+  // Validate parameters before creating auth
+  if (!org || !repo) {
+    throw new Error('Missing required parameters: org and repo are required')
+  }
+  return listUpcomingEvents(getGraphqlClient(), org, repo)
 }
 
 export async function pastEvents(org, repo) {
-  return listPastEvents(graphqlWithAuth, org, repo)
+  // Validate parameters before creating auth
+  if (!org || !repo) {
+    throw new Error('Missing required parameters: org and repo are required')
+  }
+  return listPastEvents(getGraphqlClient(), org, repo)
 }
 
 export async function event(org, repo, number) {
-  return getEvent(graphqlWithAuth, org, repo, number)
+  // Validate parameters before creating auth
+  if (!org || !repo || number === undefined || number === null) {
+    throw new Error(
+      'Missing required parameters: org, repo, and number are required'
+    )
+  }
+  return getEvent(getGraphqlClient(), org, repo, number)
 }
 
 export async function getTeam(org, teamSlug) {
-  return getTeamById(graphqlWithAuth, org, teamSlug)
+  // Validate parameters before creating auth
+  if (!org || !teamSlug) {
+    throw new Error(
+      'Missing required parameters: org and teamSlug are required'
+    )
+  }
+  return getTeamById(getGraphqlClient(), org, teamSlug)
+}
+
+export async function getFile(org, repo, filePath, options) {
+  // Validate parameters before creating auth
+  if (!org || !repo || !filePath) {
+    throw new Error(
+      'Missing required parameters: org, repo, and filePath are required'
+    )
+  }
+  return getFileContent(getGraphqlClient(), org, repo, filePath, options)
 }
 
 export async function getUser(login) {
-  return getUserProfile(graphqlWithAuth, login)
+  // Validate parameters before creating auth
+  if (!login) {
+    throw new Error('Missing required parameters: login is required')
+  }
+  return getUserProfile(getGraphqlClient(), login)
 }
