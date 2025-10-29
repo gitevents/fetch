@@ -1,14 +1,5 @@
 import { parseGql } from './lib/parseGql.js'
-
-function validateParams(params) {
-  const missing = []
-  for (const [key, value] of Object.entries(params)) {
-    if (!value) missing.push(key)
-  }
-  if (missing.length > 0) {
-    throw new Error(`Missing required parameters: ${missing.join(', ')}`)
-  }
-}
+import { validateParams } from './lib/validateParams.js'
 
 export async function getFile(graphql, org, repo, filePath, options = {}) {
   validateParams({ graphql, org, repo, filePath })

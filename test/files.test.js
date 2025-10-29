@@ -5,7 +5,7 @@ import { getFile } from '../src/files.js'
 test('getFile - validates required parameters', async () => {
   await assert.rejects(
     async () => {
-      await getFile(null, 'repo', 'file.txt')
+      await getFile(null, 'org', 'repo', 'file.txt')
     },
     {
       message: /Missing required parameters/
