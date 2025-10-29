@@ -9,6 +9,7 @@ A Node.js library for fetching events and talks from GitEvents-based GitHub repo
 
 - 🚀 Fetch upcoming and past events from GitHub Issues
 - 🎤 Retrieve event talks and speaker submissions (via sub-issues)
+- 🏢 Fetch organization statistics and metadata
 - 👥 Fetch GitHub Teams and team members
 - 🔐 Support for both GitHub Personal Access Tokens (PAT) and GitHub App authentication
 - 📊 Parse structured event data using issue forms
@@ -213,6 +214,41 @@ console.log(team)
 ```
 
 **Note:** Returns `null` if the team is not found.
+
+### `getOrganization(org)`
+
+Fetch organization statistics and metadata.
+
+**Parameters:**
+
+- `org` (string) - GitHub organization name
+
+**Returns:** `Promise<Organization | null>`
+
+Returns organization data or `null` if not found.
+
+**Example:**
+
+```javascript
+import { getOrganization } from 'gitevents-fetch'
+
+const org = await getOrganization('myorg')
+
+console.log(org)
+// {
+//   name: 'My Organization',
+//   login: 'myorg',
+//   description: 'We build amazing things',
+//   websiteUrl: 'https://myorg.com',
+//   avatarUrl: 'https://github.com/myorg.png',
+//   email: 'hello@myorg.com',
+//   location: 'San Francisco, CA',
+//   createdAt: Date('2020-01-01T00:00:00.000Z'),
+//   updatedAt: Date('2024-01-01T00:00:00.000Z'),
+//   memberCount: 42,
+//   publicRepoCount: 128
+// }
+```
 
 ### Event Object Structure
 
