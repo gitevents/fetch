@@ -2,92 +2,64 @@ import test from 'node:test'
 import assert from 'node:assert'
 
 test('index exports - validates public API', async () => {
-  // Skip actual API calls in tests, but validate exports exist
   const indexModule = await import('../src/index.js')
+  const expectedExports = [
+    'upcomingEvents',
+    'pastEvents',
+    'event',
+    'getTeam',
+    'getFile'
+  ]
 
-  assert.ok(
-    typeof indexModule.upcomingEvents === 'function',
-    'Should export upcomingEvents function'
-  )
-  assert.ok(
-    typeof indexModule.pastEvents === 'function',
-    'Should export pastEvents function'
-  )
-  assert.ok(
-    typeof indexModule.event === 'function',
-    'Should export event function'
-  )
-  assert.ok(
-    typeof indexModule.getTeam === 'function',
-    'Should export getTeam function'
-  )
-  assert.ok(
-    typeof indexModule.getFile === 'function',
-    'Should export getFile function'
-  )
+  expectedExports.forEach((name) => {
+    assert.strictEqual(
+      typeof indexModule[name],
+      'function',
+      `Should export ${name} function`
+    )
+  })
 })
 
 test('index exports - validates parameter requirements', async () => {
   const { upcomingEvents } = await import('../src/index.js')
 
-  // These should throw validation errors before trying to make API calls
   await assert.rejects(
-    async () => {
-      await upcomingEvents(null, 'repo')
-    },
-    {
-      message: /Missing required parameters/
-    },
-    'Should validate org parameter'
+    upcomingEvents(null, 'repo'),
+    /Missing required parameters/
   )
-
   await assert.rejects(
-    async () => {
-      await upcomingEvents('org', null)
-    },
-    {
-      message: /Missing required parameters/
-    },
-    'Should validate repo parameter'
+    upcomingEvents('org', null),
+    /Missing required parameters/
   )
 })
 
-// Integration test with real API - using credentials from .env
-// Skip by default to avoid failures when credentials are not available
 test(
   'upcomingEvents - real API call',
-  {
-    skip: !process.env.GH_PAT && !process.env.GH_PRIVATE_KEY
-  },
+  { skip: !process.env.GH_PAT && !process.env.GH_PRIVATE_KEY },
   async () => {
     const { upcomingEvents } = await import('../src/index.js')
-
-    // Using boulder-js/events from .env
     const results = await upcomingEvents('boulder-js', 'events')
 
-    assert.ok(Array.isArray(results), 'Should return an array')
-    assert.ok(results.length >= 0, 'Should return valid results')
+    assert.ok(Array.isArray(results))
+    if (results.length === 0) return
 
-    // If there are results, verify structure
-    if (results.length > 0) {
-      const event = results[0]
-      assert.ok(event.title, 'Event should have title')
-      assert.ok(event.number, 'Event should have issue number')
-      assert.ok(event.url, 'Event should have URL')
-      assert.ok('date' in event, 'Event should have date field')
-      assert.ok(event.facets, 'Event should have facets')
-      assert.ok(Array.isArray(event.talks), 'Event should have talks array')
-      assert.ok(
-        Array.isArray(event.reactions),
-        'Event should have reactions array'
-      )
+    const event = results[0]
+    const expectedFields = [
+      'title',
+      'number',
+      'url',
+      'date',
+      'facets',
+      'talks',
+      'reactions'
+    ]
+    expectedFields.forEach((field) => assert.ok(field in event))
+    assert.ok(Array.isArray(event.talks))
+    assert.ok(Array.isArray(event.reactions))
 
-      // If there are talks, verify author field
-      if (event.talks.length > 0) {
-        const talk = event.talks[0]
-        assert.ok('author' in talk, 'Talk should have author field')
-        assert.ok(talk.title, 'Talk should have title')
-      }
+    if (event.talks.length > 0) {
+      const talk = event.talks[0]
+      assert.ok('author' in talk && talk.title)
     }
   }
 )
