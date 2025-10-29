@@ -4,6 +4,7 @@ import { graphql } from '@octokit/graphql'
 import { ghAppId, ghAppInstallationId, ghPrivateKey, ghPAT } from './config.js'
 import { listUpcomingEvents, listPastEvents, getEvent } from './events.js'
 import { getTeamById } from './teams.js'
+import { getOrganization as getOrg } from './organization.js'
 import { getLocations as fetchLocations } from './locations.js'
 import { getUser as getUserProfile } from './users.js'
 import { getFile as getFileContent } from './files.js'
@@ -109,4 +110,12 @@ export async function getLocations(org, repo, options) {
     throw new Error('Missing required parameters: org and repo are required')
   }
   return fetchLocations(getGraphqlClient(), org, repo, options)
+}
+
+export async function getOrganization(org) {
+  // Validate parameters before creating auth
+  if (!org) {
+    throw new Error('Missing required parameters: org is required')
+  }
+  return getOrg(getGraphqlClient(), org)
 }
