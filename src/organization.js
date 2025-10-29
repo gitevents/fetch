@@ -25,20 +25,20 @@ export async function getOrganization(graphql, org) {
       return null
     }
 
-    const org = result.organization
+    const orgData = result.organization
 
     return {
-      name: org.name || null,
-      login: org.login || null,
-      description: org.description || null,
-      websiteUrl: org.websiteUrl || null,
-      avatarUrl: org.avatarUrl || null,
-      email: org.email || null,
-      location: org.location || null,
-      createdAt: org.createdAt ? new Date(org.createdAt) : null,
-      updatedAt: org.updatedAt ? new Date(org.updatedAt) : null,
-      memberCount: org.membersWithRole?.totalCount || 0,
-      publicRepoCount: org.repositories?.totalCount || 0
+      name: orgData.name || null,
+      login: orgData.login || null,
+      description: orgData.description || null,
+      websiteUrl: orgData.websiteUrl || null,
+      avatarUrl: orgData.avatarUrl || null,
+      email: orgData.email || null,
+      location: orgData.location || null,
+      createdAt: orgData.createdAt ? new Date(orgData.createdAt) : null,
+      updatedAt: orgData.updatedAt ? new Date(orgData.updatedAt) : null,
+      memberCount: orgData.membersWithRole?.totalCount || 0,
+      publicRepoCount: orgData.repositories?.totalCount || 0
     }
   } catch (error) {
     throw new Error(`Failed to fetch organization: ${error.message}`)

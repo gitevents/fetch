@@ -1,0 +1,15 @@
+query (
+  $organization: String!
+  $repository: String!
+  $expression: String!
+) {
+  repository(owner: $organization, name: $repository) {
+    object(expression: $expression) {
+      ... on Blob {
+        text
+        byteSize
+        isBinary
+      }
+    }
+  }
+}
