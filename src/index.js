@@ -65,7 +65,7 @@ export async function pastEvents(org, repo) {
 
 export async function event(org, repo, number) {
   // Validate parameters before creating auth
-  if (!org || !repo || !number) {
+  if (!org || !repo || number === undefined || number === null) {
     throw new Error(
       'Missing required parameters: org, repo, and number are required'
     )
