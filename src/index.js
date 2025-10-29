@@ -4,6 +4,7 @@ import { graphql } from '@octokit/graphql'
 import { ghAppId, ghAppInstallationId, ghPrivateKey, ghPAT } from './config.js'
 import { listUpcomingEvents, listPastEvents, getEvent } from './events.js'
 import { getTeamById } from './teams.js'
+import { getUser as getUserProfile } from './users.js'
 import { getFile as getFileContent } from './files.js'
 
 function createAuth() {
@@ -91,4 +92,12 @@ export async function getFile(org, repo, filePath, options) {
     )
   }
   return getFileContent(getGraphqlClient(), org, repo, filePath, options)
+}
+
+export async function getUser(login) {
+  // Validate parameters before creating auth
+  if (!login) {
+    throw new Error('Missing required parameters: login is required')
+  }
+  return getUserProfile(getGraphqlClient(), login)
 }
