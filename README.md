@@ -2,14 +2,21 @@
 
 [![npm version](https://img.shields.io/npm/v/gitevents-fetch.svg)](https://www.npmjs.com/package/gitevents-fetch)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![npm provenance](https://img.shields.io/badge/provenance-attested-green)](https://docs.npmjs.com/generating-provenance-statements)
 
 A Node.js library for fetching events and talks from GitEvents-based GitHub repositories using GitHub's GraphQL API. GitEvents uses GitHub Issues as a data source for managing community events and talk submissions.
+
+> **Security**: This package is published with [npm provenance](https://docs.npmjs.com/generating-provenance-statements) attestation, ensuring verifiable supply chain security.
 
 ## Features
 
 - 🚀 Fetch upcoming and past events from GitHub Issues
 - 🎤 Retrieve event talks and speaker submissions (via sub-issues)
 - 💬 Fetch GitHub Discussions (announcements, Q&A, etc.)
+- 🏢 Fetch organization statistics and metadata
+- 📍 Fetch and validate location data with consistent schema
+- 👤 Fetch user profiles and speaker information
+- 📄 Fetch file contents from repositories (text files, JSON, etc.)
 - 👥 Fetch GitHub Teams and team members
 - 🔐 Support for both GitHub Personal Access Tokens (PAT) and GitHub App authentication
 - 📊 Parse structured event data using issue forms
@@ -215,6 +222,205 @@ console.log(team)
 
 **Note:** Returns `null` if the team is not found.
 
+### `getOrganization(org)`
+
+Fetch organization statistics and metadata.
+
+**Parameters:**
+
+- `org` (string) - GitHub organization name
+
+**Returns:** `Promise<Organization | null>`
+
+Returns organization data or `null` if not found.
+
+**Example:**
+
+```javascript
+import { getOrganization } from 'gitevents-fetch'
+
+const org = await getOrganization('myorg')
+
+console.log(org)
+// {
+//   name: 'My Organization',
+//   login: 'myorg',
+//   description: 'We build amazing things',
+//   websiteUrl: 'https://myorg.com',
+//   avatarUrl: 'https://github.com/myorg.png',
+//   email: 'hello@myorg.com',
+//   location: 'San Francisco, CA',
+//   createdAt: Date('2020-01-01T00:00:00.000Z'),
+//   updatedAt: Date('2024-01-01T00:00:00.000Z'),
+//   memberCount: 42,
+//   publicRepoCount: 128
+// }
+```
+
+### `getUser(login)`
+
+Fetch a GitHub user profile (useful for speaker information).
+
+**Parameters:**
+
+- `login` (string) - GitHub username
+
+**Returns:** `Promise<User | null>`
+
+Returns user data or `null` if not found.
+
+**Example:**
+
+```javascript
+import { getUser } from 'gitevents-fetch'
+
+const user = await getUser('octocat')
+
+console.log(user)
+// {
+//   login: 'octocat',
+//   name: 'The Octocat',
+//   bio: 'GitHub mascot',
+//   avatarUrl: 'https://github.com/octocat.png',
+//   url: 'https://github.com/octocat',
+//   websiteUrl: 'https://octocat.com',
+//   company: 'GitHub',
+//   location: 'San Francisco',
+//   email: 'octocat@github.com',
+//   createdAt: Date('2011-01-25T18:44:36.000Z'),
+//   updatedAt: Date('2024-01-01T00:00:00.000Z'),
+//   followerCount: 1000,
+//   followingCount: 10,
+//   publicRepoCount: 8,
+//   socialAccounts: [
+//     { provider: 'LINKEDIN', url: 'https://linkedin.com/in/octocat' }
+//   ]
+// }
+```
+
+### `getFile(org, repo, filePath, options?)`
+
+Fetch file contents from a repository.
+
+**Parameters:**
+
+- `org` (string) - GitHub organization or user name
+- `repo` (string) - Repository name
+- `filePath` (string) - Path to the file in the repository
+- `options` (object, optional) - Options
+  - `branch` (string) - Branch name (default: 'HEAD')
+  - `parse` (boolean) - Auto-parse JSON files (default: false)
+
+**Returns:** `Promise<string | object>`
+
+Returns string content by default, or parsed object if `parse: true` is used with JSON files.
+
+**Example:**
+
+```javascript
+import { getFile } from 'gitevents-fetch'
+
+// Fetch text file
+const readme = await getFile('myorg', 'myrepo', 'README.md')
+console.log(readme) // "# My Project\n..."
+
+// Fetch JSON file with auto-parsing
+const data = await getFile('myorg', 'myrepo', 'data.json', { parse: true })
+console.log(data) // { key: 'value', ... }
+
+// Fetch from specific branch
+const config = await getFile('myorg', 'myrepo', 'config.json', {
+  branch: 'develop',
+  parse: true
+})
+```
+
+**Error Handling:**
+
+- Throws `File not found` error if file doesn't exist
+- Throws `Binary files are not supported` error for binary files
+- Throws `Failed to parse JSON` error if parse: true but content is invalid JSON
+
+### `getLocations(org, repo, options?)`
+
+Fetch and validate location data from a repository with consistent schema.
+
+**Parameters:**
+
+- `org` (string) - GitHub organization or user name
+- `repo` (string) - Repository name
+- `options` (object, optional) - Options
+  - `fileName` (string) - File name (default: 'locations.json')
+  - `branch` (string) - Branch name (default: 'HEAD')
+
+**Returns:** `Promise<{ locations: Location[], errors: Error[] | null }>`
+
+Returns validated locations and any validation errors.
+
+**Example:**
+
+```javascript
+import { getLocations } from 'gitevents-fetch'
+
+const result = await getLocations('myorg', 'events')
+
+console.log(result.locations)
+// [
+//   {
+//     id: 'venue-1',
+//     name: 'Tech Hub',
+//     address: '123 Main St, City',
+//     coordinates: { lat: 40.7128, lng: -74.006 },
+//     url: 'https://techhub.com',
+//     what3words: 'filled.count.soap',
+//     description: 'A modern tech venue',
+//     capacity: 100,
+//     accessibility: 'Wheelchair accessible'
+//   }
+// ]
+
+// Check for validation errors
+if (result.errors) {
+  console.log('Invalid locations:', result.errors)
+}
+
+// Use custom file name
+const venues = await getLocations('myorg', 'events', {
+  fileName: 'venues.json'
+})
+```
+
+**Location Schema:**
+
+Required fields:
+
+- `id` (string) - Unique identifier
+- `name` (string) - Location name
+
+Optional fields (null if not provided):
+
+- `address` (string) - Physical address
+- `coordinates` (object) - { lat: number, lng: number }
+- `url` (string) - Location website
+- `what3words` (string) - what3words address
+- `description` (string) - Location description
+- `capacity` (number) - Venue capacity
+- `accessibility` (string) - Accessibility information
+- Custom fields are preserved
+
+**Validation:**
+
+The function validates each location and returns:
+
+- `locations` - Array of valid, normalized locations
+- `errors` - Array of validation errors (null if all valid)
+
+Each error includes:
+
+- `index` - Array index of invalid location
+- `id` - Location ID (if available)
+- `errors` - Array of validation error messages
+
 ### `discussions(org, repo, options?)`
 
 Fetch discussions from a repository, optionally filtered by category.
@@ -259,6 +465,26 @@ console.log(announcements)
 //     commentCount: 5
 //   }
 // ]
+```
+
+### Fetching Talks from a Dedicated Repository
+
+Talks stored as issues in a dedicated repository can be fetched using the existing event functions:
+
+```javascript
+import { upcomingEvents, event } from 'gitevents-fetch'
+
+// Fetch all talks (using different label if needed)
+const talks = await upcomingEvents('myorg', 'talks-repo')
+
+// Fetch specific talk by issue number
+const talk = await event('myorg', 'talks-repo', 42)
+```
+
+Configure a custom label in your environment if talks use a different label:
+
+```bash
+export DEFAULT_APPROVED_EVENT_LABEL="Approved Talk"
 ```
 
 ### Event Object Structure
@@ -350,7 +576,7 @@ console.log(announcements)
     id: string              // Category ID
     name: string            // Category name
     emoji: string           // Category emoji
-    description: string     // Category description
+    description: string | null // Category description
   } | null
   reactions: string[]       // Array of reaction types
   commentCount: number      // Number of comments

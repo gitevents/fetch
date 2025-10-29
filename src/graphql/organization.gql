@@ -1,0 +1,21 @@
+query (
+  $organization: String!
+) {
+  organization(login: $organization) {
+    name
+    login
+    description
+    websiteUrl
+    avatarUrl
+    email
+    location
+    createdAt
+    updatedAt
+    membersWithRole {
+      totalCount
+    }
+    repositories(privacy: PUBLIC) {
+      totalCount
+    }
+  }
+}

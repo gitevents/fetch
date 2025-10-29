@@ -19,26 +19,26 @@ function processDiscussionsPayload(edges) {
     const node = edge?.node || edge
 
     return {
-      id: node.id || null,
-      number: node.number || null,
-      title: node.title || null,
-      url: node.url || null,
+      id: node.id,
+      number: node.number,
+      title: node.title,
+      url: node.url,
       body: node.body || null,
       createdAt: node.createdAt ? new Date(node.createdAt) : null,
       updatedAt: node.updatedAt ? new Date(node.updatedAt) : null,
       author: node.author
         ? {
-            login: node.author.login || null,
+            login: node.author.login,
             name: node.author.name || null,
-            avatarUrl: node.author.avatarUrl || null,
-            url: node.author.url || null
+            avatarUrl: node.author.avatarUrl,
+            url: node.author.url
           }
         : null,
       category: node.category
         ? {
-            id: node.category.id || null,
-            name: node.category.name || null,
-            emoji: node.category.emoji || null,
+            id: node.category.id,
+            name: node.category.name,
+            emoji: node.category.emoji,
             description: node.category.description || null
           }
         : null,
