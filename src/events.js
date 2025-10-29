@@ -1,15 +1,6 @@
 import { parseGql } from './lib/parseGql.js'
 import { processEventsPayload } from './lib/processEventsPayload.js'
-
-function validateParams(params) {
-  const missing = []
-  for (const [key, value] of Object.entries(params)) {
-    if (!value) missing.push(key)
-  }
-  if (missing.length > 0) {
-    throw new Error(`Missing required parameters: ${missing.join(', ')}`)
-  }
-}
+import { validateParams } from './lib/validateParams.js'
 
 export async function listUpcomingEvents(
   graphql,
