@@ -48,21 +48,47 @@ function getGraphqlClient() {
 }
 
 export async function upcomingEvents(org, repo) {
+  // Validate parameters before creating auth
+  if (!org || !repo) {
+    throw new Error('Missing required parameters: org and repo are required')
+  }
   return listUpcomingEvents(getGraphqlClient(), org, repo)
 }
 
 export async function pastEvents(org, repo) {
+  // Validate parameters before creating auth
+  if (!org || !repo) {
+    throw new Error('Missing required parameters: org and repo are required')
+  }
   return listPastEvents(getGraphqlClient(), org, repo)
 }
 
 export async function event(org, repo, number) {
+  // Validate parameters before creating auth
+  if (!org || !repo || !number) {
+    throw new Error(
+      'Missing required parameters: org, repo, and number are required'
+    )
+  }
   return getEvent(getGraphqlClient(), org, repo, number)
 }
 
 export async function getTeam(org, teamSlug) {
+  // Validate parameters before creating auth
+  if (!org || !teamSlug) {
+    throw new Error(
+      'Missing required parameters: org and teamSlug are required'
+    )
+  }
   return getTeamById(getGraphqlClient(), org, teamSlug)
 }
 
 export async function getFile(org, repo, filePath, options) {
+  // Validate parameters before creating auth
+  if (!org || !repo || !filePath) {
+    throw new Error(
+      'Missing required parameters: org, repo, and filePath are required'
+    )
+  }
   return getFileContent(getGraphqlClient(), org, repo, filePath, options)
 }
