@@ -246,6 +246,7 @@ console.log(user)
 //   location: 'San Francisco',
 //   email: 'octocat@github.com',
 //   createdAt: Date('2011-01-25T18:44:36.000Z'),
+//   updatedAt: Date('2024-01-01T00:00:00.000Z'),
 //   followerCount: 1000,
 //   followingCount: 10,
 //   publicRepoCount: 8,

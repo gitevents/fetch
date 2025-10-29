@@ -1,14 +1,5 @@
 import { parseGql } from './lib/parseGql.js'
-
-function validateParams(params) {
-  const missing = []
-  for (const [key, value] of Object.entries(params)) {
-    if (!value) missing.push(key)
-  }
-  if (missing.length > 0) {
-    throw new Error(`Missing required parameters: ${missing.join(', ')}`)
-  }
-}
+import { validateParams } from './lib/validateParams.js'
 
 export async function getUser(graphql, login) {
   validateParams({ graphql, login })
@@ -44,8 +35,8 @@ export async function getUser(graphql, login) {
       publicRepoCount: user.repositories?.totalCount || 0,
       socialAccounts:
         user.socialAccounts?.nodes?.map((account) => ({
-          provider: account.provider || null,
-          url: account.url || null
+          provider: account.provider,
+          url: account.url
         })) || []
     }
   } catch (error) {
