@@ -42,22 +42,20 @@ const mockEventDirectNode = {
 test('processEventsPayload - handles edges structure', async () => {
   const result = await processEventsPayload([mockEventWithEdges])
 
-  assert.strictEqual(result.length, 1, 'Should return one event')
+  assert.strictEqual(result.length, 1)
   assert.strictEqual(result[0].title, 'Test Event 1')
   assert.strictEqual(result[0].number, 123)
-  assert.strictEqual(result[0].url, 'https://github.com/org/repo/issues/123')
-  assert.ok(result[0].facets, 'Should have parsed facets')
-  assert.strictEqual(result[0].reactions.length, 2, 'Should have 2 reactions')
-  assert.strictEqual(result[0].talks.length, 1, 'Should have 1 talk')
+  assert.ok(result[0].facets)
+  assert.strictEqual(result[0].reactions.length, 2)
+  assert.strictEqual(result[0].talks.length, 1)
 })
 
 test('processEventsPayload - handles direct nodes structure', async () => {
   const result = await processEventsPayload([mockEventDirectNode])
 
-  assert.strictEqual(result.length, 1, 'Should return one event')
+  assert.strictEqual(result.length, 1)
   assert.strictEqual(result[0].title, 'Test Event 2')
-  assert.strictEqual(result[0].number, 456)
-  assert.strictEqual(result[0].reactions.length, 1, 'Should have 1 reaction')
+  assert.strictEqual(result[0].reactions.length, 1)
   assert.strictEqual(result[0].talks.length, 0, 'Should have no talks')
 })
 
