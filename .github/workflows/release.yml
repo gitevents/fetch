@@ -1,11 +1,5 @@
 name: Release
 
-permissions:
-  contents: write
-  issues: write
-  pull-requests: write
-  id-token: write
-
 on:
   push:
     branches:
@@ -20,14 +14,15 @@ jobs:
     needs: [test]
     runs-on: ubuntu-latest
     permissions:
-      contents: write
-      issues: write
-      pull-requests: write
-      id-token: write
+      id-token: write  # Required for OIDC/provenance
+      contents: write  # Required for semantic-release to create releases
+      issues: write    # Required for semantic-release to comment on issues
+      pull-requests: write  # Required for semantic-release to comment on PRs
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 22
