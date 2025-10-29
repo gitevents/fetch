@@ -1,0 +1,32 @@
+query (
+  $login: String!
+) {
+  user(login: $login) {
+    login
+    name
+    bio
+    avatarUrl
+    url
+    websiteUrl
+    company
+    location
+    email
+    createdAt
+    updatedAt
+    followers {
+      totalCount
+    }
+    following {
+      totalCount
+    }
+    repositories(privacy: PUBLIC) {
+      totalCount
+    }
+    socialAccounts(first: 10) {
+      nodes {
+        provider
+        url
+      }
+    }
+  }
+}

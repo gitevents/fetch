@@ -2,11 +2,13 @@ import { defaultApprovedEventLabel } from '../config.js'
 import eventsQuery from '../graphql/events.gql?raw'
 import eventQuery from '../graphql/event.gql?raw'
 import teamQuery from '../graphql/team.gql?raw'
+import userQuery from '../graphql/user.gql?raw'
 
 const queries = {
   events: eventsQuery,
   event: eventQuery,
-  team: teamQuery
+  team: teamQuery,
+  user: userQuery
 }
 
 export async function parseGql(path) {

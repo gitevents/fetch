@@ -9,6 +9,7 @@ A Node.js library for fetching events and talks from GitEvents-based GitHub repo
 
 - 🚀 Fetch upcoming and past events from GitHub Issues
 - 🎤 Retrieve event talks and speaker submissions (via sub-issues)
+- 👤 Fetch user profiles and speaker information
 - 👥 Fetch GitHub Teams and team members
 - 🔐 Support for both GitHub Personal Access Tokens (PAT) and GitHub App authentication
 - 📊 Parse structured event data using issue forms
@@ -213,6 +214,66 @@ console.log(team)
 ```
 
 **Note:** Returns `null` if the team is not found.
+
+### `getUser(login)`
+
+Fetch a GitHub user profile (useful for speaker information).
+
+**Parameters:**
+
+- `login` (string) - GitHub username
+
+**Returns:** `Promise<User | null>`
+
+Returns user data or `null` if not found.
+
+**Example:**
+
+```javascript
+import { getUser } from 'gitevents-fetch'
+
+const user = await getUser('octocat')
+
+console.log(user)
+// {
+//   login: 'octocat',
+//   name: 'The Octocat',
+//   bio: 'GitHub mascot',
+//   avatarUrl: 'https://github.com/octocat.png',
+//   url: 'https://github.com/octocat',
+//   websiteUrl: 'https://octocat.com',
+//   company: 'GitHub',
+//   location: 'San Francisco',
+//   email: 'octocat@github.com',
+//   createdAt: Date('2011-01-25T18:44:36.000Z'),
+//   followerCount: 1000,
+//   followingCount: 10,
+//   publicRepoCount: 8,
+//   socialAccounts: [
+//     { provider: 'LINKEDIN', url: 'https://linkedin.com/in/octocat' }
+//   ]
+// }
+```
+
+### Fetching Talks from a Dedicated Repository
+
+Talks stored as issues in a dedicated repository can be fetched using the existing event functions:
+
+```javascript
+import { upcomingEvents, event } from 'gitevents-fetch'
+
+// Fetch all talks (using different label if needed)
+const talks = await upcomingEvents('myorg', 'talks-repo')
+
+// Fetch specific talk by issue number
+const talk = await event('myorg', 'talks-repo', 42)
+```
+
+Configure a custom label in your environment if talks use a different label:
+
+```bash
+export DEFAULT_APPROVED_EVENT_LABEL="Approved Talk"
+```
 
 ### Event Object Structure
 
