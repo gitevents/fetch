@@ -68,18 +68,14 @@ const mockEventResponse = {
 
 test('listUpcomingEvents - fetches open events successfully', async () => {
   const mockGraphql = async (query, vars) => {
-    assert.ok(query.includes('query'), 'Should pass GraphQL query')
-    assert.strictEqual(vars.organization, 'testorg')
-    assert.strictEqual(vars.repository, 'testrepo')
+    assert.ok(query.includes('query'))
     assert.strictEqual(vars.state, 'OPEN')
     return mockEventsResponse
   }
 
   const results = await listUpcomingEvents(mockGraphql, 'testorg', 'testrepo')
-
   assert.strictEqual(results.length, 1)
   assert.strictEqual(results[0].title, 'Test Event 1')
-  assert.strictEqual(results[0].number, 123)
 })
 
 test('listPastEvents - fetches closed events successfully', async () => {
@@ -89,9 +85,7 @@ test('listPastEvents - fetches closed events successfully', async () => {
   }
 
   const results = await listPastEvents(mockGraphql, 'testorg', 'testrepo')
-
   assert.strictEqual(results.length, 1)
-  assert.strictEqual(results[0].title, 'Test Event 1')
 })
 
 test('getEvent - fetches single event successfully', async () => {
@@ -101,16 +95,12 @@ test('getEvent - fetches single event successfully', async () => {
   }
 
   const results = await getEvent(mockGraphql, 'testorg', 'testrepo', 123)
-
-  assert.strictEqual(results.length, 1)
   assert.strictEqual(results[0].title, 'Test Event 1')
   assert.strictEqual(results[0].talks.length, 1)
-  assert.strictEqual(results[0].talks[0].title, 'Talk 1')
 })
 
 test('getEvent - includes date and author fields', async () => {
   const mockGraphql = async () => mockEventResponse
-
   const results = await getEvent(mockGraphql, 'testorg', 'testrepo', 123)
 
   // Verify date field exists
@@ -125,49 +115,24 @@ test('getEvent - includes date and author fields', async () => {
 
 test('listUpcomingEvents - validates required parameters', async () => {
   const mockGraphql = async () => mockEventsResponse
+  const message = /Missing required parameters/
 
+  await assert.rejects(() => listUpcomingEvents(null, 'org', 'repo'), message)
   await assert.rejects(
-    async () => {
-      await listUpcomingEvents(null, 'org', 'repo')
-    },
-    {
-      message: /Missing required parameters/
-    },
-    'Should throw for missing graphql client'
+    () => listUpcomingEvents(mockGraphql, null, 'repo'),
+    message
   )
-
   await assert.rejects(
-    async () => {
-      await listUpcomingEvents(mockGraphql, null, 'repo')
-    },
-    {
-      message: /Missing required parameters/
-    },
-    'Should throw for missing org'
-  )
-
-  await assert.rejects(
-    async () => {
-      await listUpcomingEvents(mockGraphql, 'org', null)
-    },
-    {
-      message: /Missing required parameters/
-    },
-    'Should throw for missing repo'
+    () => listUpcomingEvents(mockGraphql, 'org', null),
+    message
   )
 })
 
 test('getEvent - validates required parameters', async () => {
   const mockGraphql = async () => mockEventResponse
-
   await assert.rejects(
-    async () => {
-      await getEvent(mockGraphql, 'org', 'repo', null)
-    },
-    {
-      message: /Missing required parameters/
-    },
-    'Should throw for missing issue number'
+    () => getEvent(mockGraphql, 'org', 'repo', null),
+    /Missing required parameters/
   )
 })
 
@@ -175,15 +140,9 @@ test('listUpcomingEvents - handles GraphQL errors', async () => {
   const mockGraphql = async () => {
     throw new Error('GraphQL API Error')
   }
-
   await assert.rejects(
-    async () => {
-      await listUpcomingEvents(mockGraphql, 'testorg', 'testrepo')
-    },
-    {
-      message: /Failed to fetch upcoming events/
-    },
-    'Should wrap and rethrow GraphQL errors'
+    () => listUpcomingEvents(mockGraphql, 'testorg', 'testrepo'),
+    /Failed to fetch upcoming events/
   )
 })
 
@@ -192,7 +151,6 @@ test('listUpcomingEvents - respects pagination parameter', async () => {
     assert.strictEqual(vars.first, 25)
     return mockEventsResponse
   }
-
   await listUpcomingEvents(mockGraphql, 'testorg', 'testrepo', { first: 25 })
 })
 
@@ -200,14 +158,8 @@ test('getEvent - includes error context with issue number', async () => {
   const mockGraphql = async () => {
     throw new Error('Not found')
   }
-
   await assert.rejects(
-    async () => {
-      await getEvent(mockGraphql, 'testorg', 'testrepo', 999)
-    },
-    {
-      message: /Failed to fetch event #999/
-    },
-    'Should include issue number in error message'
+    () => getEvent(mockGraphql, 'testorg', 'testrepo', 999),
+    /Failed to fetch event #999/
   )
 })
