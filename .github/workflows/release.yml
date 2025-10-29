@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  test:
+    uses: ./.github/workflows/test.yml
+    secrets: inherit
+
+  release:
+    needs: [test]
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write  # Required for OIDC/provenance
+      contents: write  # Required for semantic-release to create releases
+      issues: write    # Required for semantic-release to comment on issues
+      pull-requests: write  # Required for semantic-release to comment on PRs
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: 'npm'
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm ci
+      - run: npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          HUSKY: 0
+          NPM_CONFIG_PROVENANCE: true
