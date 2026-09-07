@@ -1,4 +1,4 @@
-query ($organization: String!, $repository: String!, $number: Int!) {
+export default `query ($organization: String!, $repository: String!, $number: Int!) {
   repository(owner: $organization, name: $repository) {
     issue(number: $number) {
       id
@@ -39,3 +39,4 @@ query ($organization: String!, $repository: String!, $number: Int!) {
     }
   }
 }
+`

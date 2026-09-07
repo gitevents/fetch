@@ -1,4 +1,4 @@
-query (
+export default `query (
   $login: String!
 ) {
   user(login: $login) {
@@ -30,3 +30,4 @@ query (
     }
   }
 }
+`

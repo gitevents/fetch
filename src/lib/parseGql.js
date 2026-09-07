@@ -1,11 +1,11 @@
 import { defaultApprovedEventLabel } from '../config.js'
-import eventsQuery from '../graphql/events.gql?raw'
-import eventQuery from '../graphql/event.gql?raw'
-import teamQuery from '../graphql/team.gql?raw'
-import discussionsQuery from '../graphql/discussions.gql?raw'
-import organizationQuery from '../graphql/organization.gql?raw'
-import userQuery from '../graphql/user.gql?raw'
-import fileQuery from '../graphql/file.gql?raw'
+import eventsQuery from '../graphql/events.js'
+import eventQuery from '../graphql/event.js'
+import teamQuery from '../graphql/team.js'
+import discussionsQuery from '../graphql/discussions.js'
+import organizationQuery from '../graphql/organization.js'
+import userQuery from '../graphql/user.js'
+import fileQuery from '../graphql/file.js'
 
 const queries = {
   events: eventsQuery,

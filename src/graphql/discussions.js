@@ -1,4 +1,4 @@
-query (
+export default `query (
   $organization: String!
   $repository: String!
   $categoryId: ID
@@ -51,3 +51,4 @@ query (
     }
   }
 }
+`

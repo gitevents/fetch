@@ -1,4 +1,4 @@
-query (
+export default `query (
   $organization: String!
 ) {
   organization(login: $organization) {
@@ -19,3 +19,4 @@ query (
     }
   }
 }
+`
