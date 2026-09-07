@@ -48,14 +48,15 @@ The authenticated GraphQL client is created once in `src/index.js` and passed to
    - All functions accept pagination parameters (default: `{ first: 10 }`)
 
 2. **GraphQL Layer** (src/graphql/)
-   - `.gql` files contain GraphQL query definitions
-   - `events.gql` - Query for multiple events with cursor-based pagination
-   - `event.gql` - Query for single event by issue number
+   - `.js` modules export GraphQL query definitions as strings
+   - `events.js` - Query for multiple events with cursor-based pagination
+   - `event.js` - Query for single event by issue number
+   - Plain ES modules, so no bundler plugin or custom ESM loader is needed
    - Queries use GitHub's subIssues feature to fetch talks associated with events
    - Includes User fragment to fetch author name for talk speakers
 
 3. **Processing Layer** (src/lib/)
-   - `parseGql.js` - Loads .gql files and replaces `DEFAULT_LABEL` placeholder with configured label
+   - `parseGql.js` - Selects a query module and replaces the `DEFAULT_LABEL` placeholder with the configured label
    - `processEventsPayload.js` - Transforms GraphQL response into structured events/talks data
      - **Null-safe processing**: Uses optional chaining (`?.`) to safely handle missing reactions/subIssues
      - Uses `@zentered/issue-forms-body-parser` to parse issue body into structured facets
@@ -113,7 +114,7 @@ This codebase has been hardened for production with the following improvements:
 
 - Duplicate fields removed from queries (reduced size)
 - Queries request only necessary fields
-- Both `events.gql` and `event.gql` properly fetch `url` field for talks
+- Both `events.js` and `event.js` properly fetch `url` field for talks
 
 ### Testing
 

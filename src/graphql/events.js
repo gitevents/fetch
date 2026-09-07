@@ -1,4 +1,4 @@
-query (
+export default `query (
   $organization: String!
   $repository: String!
   $state: [IssueState!]
@@ -58,3 +58,4 @@ query (
     }
   }
 }
+`

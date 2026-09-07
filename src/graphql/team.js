@@ -1,4 +1,4 @@
-query ($organization: String!, $teamSlug: String!) {
+export default `query ($organization: String!, $teamSlug: String!) {
   organization(login: $organization) {
     team(slug: $teamSlug) {
       name
@@ -24,3 +24,4 @@ query ($organization: String!, $teamSlug: String!) {
     }
   }
 }
+`

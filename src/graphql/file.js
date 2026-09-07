@@ -1,4 +1,4 @@
-query (
+export default `query (
   $organization: String!
   $repository: String!
   $expression: String!
@@ -13,3 +13,4 @@ query (
     }
   }
 }
+`
